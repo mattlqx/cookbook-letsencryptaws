@@ -16,7 +16,7 @@ before_install:
   - openssl aes-256-cbc -K $encrypted_c08818c29c2f_key -iv $encrypted_c08818c29c2f_iv -in .travis/supermarket.pem.enc -out .travis/supermarket.pem -d
 deploy:
   provider: script
-  script: rvm use 2.4 do bash -c 'bundle install && bundle exec knife supermarket share letsencryptaws -o .. --config-option user=mkulka --config-option client_key=.travis/supermarket.pem'
+  script: rvm use 2.4 do bash -c 'bundle install && bundle exec knife supermarket share letsencryptaws -o .. --config-option node_name=mkulka --config-option client_key=.travis/supermarket.pem'
   skip_cleanup: true
   on:
     tags: true
