@@ -2,6 +2,8 @@
 
 This cookbook is for an implementation of SSL certificate generation and fetching via the Let's Encrypt certificate authority. Certificates are synced from local storage to S3, which is then used by nodes to retrieve the generated certificate. Authentication is done via DNS challenges and automated via Ruby scripts to add and remove TXT records from your domain when required.
 
+Nodes do not need to be EC2 instances to retrieve or request certificates. All that is required is AWS credentials or profile to perform Route 53 and S3 operations.
+
 ## Requirements
 
 - Python 2.7 (for certbot and awscli)
@@ -34,6 +36,15 @@ The flow looks like this:
 - Chef run on 'certbot' host. Requests certificate and uploads to S3.
 - Second Chef run on requesting node overwrites the previously saved default cert/key with real cert/key from S3.
 
+Any service that uses a certificate provided by this recipe should subscribe to one of the certificate file resources so that it can be reloaded when the certificate is renewed. For example:
+
+```
+service 'nginx' do
+  action %i[start enable]
+  subscribes :restart, "file[#{::File.join(node['letsencryptaws']['ssl_cert_dir'], 'example.com.crt')}]", :delayed
+end
+```
+
 ### letsencryptaws::certbot
 
 This is meant to be run by a single host that manages fetching certificates based on a Chef server `search`. Make sure the instance profile or AWS access keys in the data bag is granted the following permissions on the domains in which you allow certificates to be requested by nodes:
@@ -41,6 +52,10 @@ This is meant to be run by a single host that manages fetching certificates base
 - `route53:ChangeResourceRecordSets`
 - `route53:ListHostedZonesByName`
 - `route53:GetChange`
+
+The credentials will also require write access to the S3 bucket and path that you choose to sync to.
+
+If you desire persistent storage on an EBS volume, use the `['letsencryptaws']['ebs_device']` to specify the path to the device. This will device will have an ext4 filesystem created on it if one does not already exist and be mounted at `['letsencryptaws']['config_dir']`. This is where certbot will store its configs and certificates. All operations take place locally at this path and at the end of the recipe gets synced to S3.
 
 ### letsencryptaws::import_keystore
 
