@@ -1,0 +1,21 @@
+---
+driver:
+  name: vagrant
+
+platforms:
+  - name: ubuntu-16.04
+
+suites:
+  - name: default
+    run_list:
+      - recipe[letsencryptaws_test::gen_keystores]
+      - recipe[letsencryptaws::default]
+      - recipe[letsencryptaws::certbot]
+    attributes:
+      aws_access_key_id: <%= ENV['AWS_ACCESS_KEY_ID'] %>
+      aws_secret_access_key: <%= ENV['AWS_SECRET_ACCESS_KEY'] %>
+      letsencryptaws:
+        test_certs: true
+        sync_path: letsencrypt-test
+        data_bag: letsencryptaws
+        data_bag_item: credentials
