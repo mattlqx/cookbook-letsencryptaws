@@ -91,4 +91,6 @@ Vagrantfile
 
 # Travis #
 ##########
+.travis/*
 .travis.yml
+coverage
