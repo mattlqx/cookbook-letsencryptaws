@@ -2,6 +2,9 @@
 
 This file is used to list changes made in each version of the letsencryptaws cookbook.
 
+## 1.0.1
+- [mattlqx] - Bug fixes and additional docs.
+
 ## 1.0.0
 - [mattlqx] - Sanitize and open-source. Initial public release. 🎉
 

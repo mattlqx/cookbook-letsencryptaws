@@ -134,6 +134,7 @@ ruby_block 'remove unrequested certificates' do
       ).run_command.error!
     end
   end
+  only_if { node['letsencryptaws']['remove_unused_certs'] }
 end
 
 kms = nil

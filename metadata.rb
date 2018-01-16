@@ -6,12 +6,9 @@ maintainer_email 'matt@lqx.net'
 license          'MIT'
 description      'Procures Let\'s Encrypt SSL certificates for Route 53-hosted domains'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          '1.0.0'
+version          '1.0.1'
 
-if respond_to?(:supports)
-  supports      'ubuntu'
-  supports      'windows'
-end
+supports     'ubuntu' if respond_to?(:supports)
 chef_version '>= 12'
 
 issues_url 'https://github.com/mattlqx/cookbook-letsencryptaws/issues' if respond_to?(:issues_url)

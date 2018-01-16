@@ -8,6 +8,9 @@ default['letsencryptaws']['ebs_device'] = '/dev/xvdf'
 # Should test certificates be fetched (beware: non-test certs have ratelimits)
 default['letsencryptaws']['test_certs'] = false
 
+# Should certificates that are no longer requested by any node be removed?
+default['letsencryptaws']['remove_unused_certs'] = true
+
 # Email used by certbot during certificate request
 default['letsencryptaws']['email'] = 'nobody@example.com'
 

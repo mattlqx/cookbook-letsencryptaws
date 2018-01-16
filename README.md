@@ -77,10 +77,28 @@ may have additional SANs if other nodes request them for the same common name.
     <th>Default</th>
   </tr>
   <tr>
-    <td><tt>normal['letsencryptaws']['certs']</tt></td>
+    <td><tt>['letsencryptaws']['certs']</tt></td>
     <td>Hash</td>
     <td>keys are the common name, values are an array of strings that are the SANs for the cert. These all get merged together in the final certificate.</td>
     <td><tt>{}</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['letsencryptaws']['ssl_cert_dir']</tt></td>
+    <td>string</td>
+    <td>path where ssl certs will be downloaded to</td>
+    <td><tt>/etc/ssl/certs</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['letsencryptaws']['ssl_key_dir']</tt></td>
+    <td>string</td>
+    <td>path where ssl private keys will be downloaded to</td>
+    <td><tt>/etc/ssl/private</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['letsencryptaws']['ssl_ca_dir']</tt></td>
+    <td>string</td>
+    <td>path where ssl CA certificates will be downloaded to</td>
+    <td><tt>/etc/ssl/certs</tt></td>
   </tr>
 </table>
 
@@ -153,6 +171,12 @@ This recipe is automatically included if the `import_keystore` hash is not empty
     <td>boolean</td>
     <td>request certs from staging (signed by fake CA, subject to less rate limiting)</td>
     <td><tt>false</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['letsencryptaws']['remove_unused_certs']</tt></td>
+    <td>boolean</td>
+    <td>remove certificates that are no longer requested by any node</td>
+    <td><tt>true</tt></td>
   </tr>
   <tr>
     <td><tt>['letsencryptaws']['sync_bucket']</tt></td>
