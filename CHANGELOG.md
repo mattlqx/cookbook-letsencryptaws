@@ -2,6 +2,9 @@
 
 This file is used to list changes made in each version of the letsencryptaws cookbook.
 
+## 1.0.2
+- [mattlqx] - Correct `sync_path` default to match documentation.
+
 ## 1.0.1
 - [mattlqx] - Bug fixes and additional docs.
 

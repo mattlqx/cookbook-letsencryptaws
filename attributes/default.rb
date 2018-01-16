@@ -20,7 +20,7 @@ default['letsencryptaws']['data_bag_item'] = nil
 
 # S3 certificate sync
 default['letsencryptaws']['sync_bucket'] = nil
-default['letsencryptaws']['sync_path'] = nil
+default['letsencryptaws']['sync_path'] = 'letsencrypt'
 default['letsencryptaws']['kms_key_id'] = nil
 
 # Don't fetch certificates with these exactly matching primary names
