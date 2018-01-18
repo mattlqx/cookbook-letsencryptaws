@@ -6,7 +6,7 @@ maintainer_email 'matt@lqx.net'
 license          'MIT'
 description      'Procures Let\'s Encrypt SSL certificates for Route 53-hosted domains'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          '1.0.2'
+version          '1.0.3'
 
 supports     'ubuntu' if respond_to?(:supports)
 chef_version '>= 12'

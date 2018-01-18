@@ -37,12 +37,15 @@ case node['platform']
 when 'windows'
   default['letsencryptaws']['ssl_cert_dir'] = 'c:\ssl\certs'
   default['letsencryptaws']['ssl_key_dir'] = 'c:\ssl\keys'
+  default['letsencryptaws']['ssl_ca_dir'] = 'c:\ssl\certs'
+  default['letsencryptaws']['root_ca_dir'] = 'c:\ssl\certs'
   default['letsencryptaws']['ssl_owner'] = 'SYSTEM'
   default['letsencryptaws']['ssl_group'] = nil
 when 'ubuntu'
   default['letsencryptaws']['ssl_cert_dir'] = '/etc/ssl/certs'
   default['letsencryptaws']['ssl_key_dir'] = '/etc/ssl/private'
   default['letsencryptaws']['ssl_ca_dir'] = '/etc/ssl/certs'
+  default['letsencryptaws']['root_ca_dir'] = '/etc/ssl/certs'
   default['letsencryptaws']['ssl_owner'] = 'root'
   default['letsencryptaws']['ssl_group'] = 'ssl-cert'
 end

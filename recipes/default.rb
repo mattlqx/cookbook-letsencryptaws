@@ -160,7 +160,7 @@ node['letsencryptaws']['certs'].each_pair do |domain, _sans|
             "  -inkey #{domain}.key -out #{domain}.p12 -name #{domain} " \
             "  -passout \"pass:#{creds('p12_password')}\"" \
             "  -CAfile #{File.join(node['letsencryptaws']['ssl_cert_dir'], "#{domain}.ca")}" \
-            "  -CApath #{node['letsencryptaws']['ssl_ca_dir']} -caname letsencrypt -chain"
+            "  -CApath #{node['letsencryptaws']['root_ca_dir']} -caname letsencrypt -chain"
     action :nothing
     sensitive true
     subscribes :run, "s3_file[#{::File.join(node['letsencryptaws']['ssl_cert_dir'], "#{domain}.crt")}]", :delayed

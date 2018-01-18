@@ -2,6 +2,9 @@
 
 This file is used to list changes made in each version of the letsencryptaws cookbook.
 
+## 1.0.3
+- [mattlqx] - Add attribute for root CA path.
+
 ## 1.0.2
 - [mattlqx] - Correct `sync_path` default to match documentation.
 
