@@ -10,6 +10,7 @@ Nodes do not need to be EC2 instances to retrieve or request certificates. All t
 - certbot ACME client
 - Domain(s) hosted by AWS Route 53 (only second-level domains, subdomain zones are not supported)
 - S3 bucket for storing/retrieving certificate files
+- Properly stored AWS credentials (see https://github.com/aws/aws-sdk-ruby#configuration)
 
 ### Platforms
 
@@ -53,9 +54,11 @@ This is meant to be run by a single host that manages fetching certificates base
 - `route53:ListHostedZonesByName`
 - `route53:GetChange`
 
-The credentials will also require write access to the S3 bucket and path that you choose to sync to.
+The credentials will also require write access to the S3 bucket and path that you choose to sync to. The authenticator and cleanup scripts do not use the credential information from the data bag, so it is left up to the user to place the `.aws/credentials` file in the proper location, if not using an instance profile.
 
 If you desire persistent storage on an EBS volume, use the `['letsencryptaws']['ebs_device']` to specify the path to the device. This will device will have an ext4 filesystem created on it if one does not already exist and be mounted at `['letsencryptaws']['config_dir']`. This is where certbot will store its configs and certificates. All operations take place locally at this path and at the end of the recipe gets synced to S3.
+
+Certbot operations use the `--expand` and `--cert-name` arguments to keep the certificates up-to-date with the requested names. This means the certificate will be renewed appropriately as nodes desire for the certificate name changes.
 
 ### letsencryptaws::import_keystore
 

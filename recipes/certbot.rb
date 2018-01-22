@@ -91,6 +91,7 @@ certs_needed.each_pair do |domain, sans|
   command = [
     'certbot certonly',
     '--manual',
+    "--cert-name #{domain}",
     '--preferred-challenges=dns',
     "--manual-auth-hook #{::File.join(node['letsencryptaws']['scripts_dir'], 'certbot_route53_authenticator.rb')}",
     "--manual-cleanup-hook #{::File.join(node['letsencryptaws']['scripts_dir'], 'certbot_route53_cleanup.rb')}",
