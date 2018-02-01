@@ -21,7 +21,7 @@ The goal for certificate retrieval is to support Windows but for now, Ubuntu onl
 
 ### Cookbooks
 
-- `s3_file` - To grab certificates from S3
+- `remote_file_s3` - To grab certificates from S3
 - `poise-python` - For grabbing awscli for certificate syncing.
 
 ## Usage
