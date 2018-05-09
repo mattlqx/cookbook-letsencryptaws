@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 
 gem 'aws-sdk-route53'
 gem 'berkshelf'
-gem 'chef', '~> 13.6.4'
+gem 'chef', '~> 13.8.5'
 gem 'chefspec', '~> 7.1.0'
 gem 'foodcritic', '~> 12.2.2'
 gem 'kitchen-transport-rsync'

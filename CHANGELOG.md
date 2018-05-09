@@ -2,6 +2,12 @@
 
 This file is used to list changes made in each version of the letsencryptaws cookbook.
 
+## 1.0.6
+- [mattlqx] - Loosen poise-python version dependency.
+
+## 1.0.5
+- [mattlqx] - Switch backend s3 resource to `remote_file_s3`
+
 ## 1.0.4
 - [mattlqx] - Use `--cert-name` attribute for certbot.
 
