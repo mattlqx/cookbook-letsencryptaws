@@ -2,6 +2,9 @@
 
 This file is used to list changes made in each version of the letsencryptaws cookbook.
 
+## 1.0.7
+- [mattlqx] - Bump `cryptography` module version.
+
 ## 1.0.6
 - [mattlqx] - Loosen poise-python version dependency.
 
