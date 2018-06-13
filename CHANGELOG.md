@@ -2,6 +2,9 @@
 
 This file is used to list changes made in each version of the letsencryptaws cookbook.
 
+## 1.0.8
+- [mattlqx] - Add explicit python package version idna 2.6. Yay constaints.
+
 ## 1.0.7
 - [mattlqx] - Bump `cryptography` module version.
 
