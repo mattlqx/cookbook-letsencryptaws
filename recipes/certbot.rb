@@ -22,6 +22,11 @@ python_package 'cryptography' do
   action :upgrade
 end
 
+python_package 'idna' do
+  version '2.6'
+  action :upgrade
+end
+
 python_package 'certbot'
 python_package 'awscli'
 
