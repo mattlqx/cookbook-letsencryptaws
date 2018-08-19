@@ -1,6 +1,6 @@
 # letsencryptaws Cookbook
 
-This cookbook is for an implementation of SSL certificate generation and fetching via the Let's Encrypt certificate authority. Certificates are synced from local storage to S3, which is then used by nodes to retrieve the generated certificate. Authentication is done via DNS challenges and automated via Ruby scripts to add and remove TXT records from your domain when required.
+This cookbook is for an implementation of SSL certificate generation and fetching via the Let's Encrypt certificate authority. Certificates are synced from local storage to S3, which is then used by nodes to retrieve the generated certificate. Authentication is done via DNS challenges and the offical Certbot plugin for Route 53.
 
 Nodes do not need to be EC2 instances to retrieve or request certificates. All that is required is AWS credentials or profile to perform Route 53 and S3 operations.
 
@@ -8,7 +8,7 @@ Nodes do not need to be EC2 instances to retrieve or request certificates. All t
 
 - Python 2.7 (for certbot and awscli)
 - certbot ACME client
-- Domain(s) hosted by AWS Route 53 (only second-level domains, subdomain zones are not supported)
+- Domain(s) hosted by AWS Route 53
 - S3 bucket for storing/retrieving certificate files
 - Properly stored AWS credentials (see https://github.com/aws/aws-sdk-ruby#configuration)
 
@@ -46,6 +46,8 @@ service 'nginx' do
 end
 ```
 
+**FOR WILDCARD CERTIFICATES**, you should specify the CN as you'd like as `certs` key (e.g. `*.example.com`) however any `*` will be substituted with `star` in the filenames to prevent the need for escaping. So the filename you'd reference for the certificate would be `star.example.com.crt`.
+
 ### letsencryptaws::certbot
 
 This is meant to be run by a single host that manages fetching certificates based on a Chef server `search`. Make sure the instance profile or AWS access keys in the data bag is granted the following permissions on the domains in which you allow certificates to be requested by nodes:
@@ -54,7 +56,7 @@ This is meant to be run by a single host that manages fetching certificates base
 - `route53:ListHostedZonesByName`
 - `route53:GetChange`
 
-The credentials will also require write access to the S3 bucket and path that you choose to sync to. The authenticator and cleanup scripts do not use the credential information from the data bag, so it is left up to the user to place the `.aws/credentials` file in the proper location, if not using an instance profile.
+The credentials will also require write access to the S3 bucket and path that you choose to sync to.
 
 If you desire persistent storage on an EBS volume, use the `['letsencryptaws']['ebs_device']` to specify the path to the device. This will device will have an ext4 filesystem created on it if one does not already exist and be mounted at `['letsencryptaws']['config_dir']`. This is where certbot will store its configs and certificates. All operations take place locally at this path and at the end of the recipe gets synced to S3.
 
@@ -140,10 +142,10 @@ This recipe is automatically included if the `import_keystore` hash is not empty
     <td><tt>/mnt/letsencrypt</tt></td>
   </tr>
   <tr>
-    <td><tt>['letsencryptaws']['scripts_dir']</tt></td>
+    <td><tt>['letsencryptaws']['certbot_version']</tt></td>
     <td>string</td>
-    <td>dir to put Ruby script wrappers that will be used for Route 53 certificate validation</td>
-    <td><tt>/mnt/letsencrypt/scripts</tt></td>
+    <td>version to enforce for certbot</td>
+    <td><tt>0.26.1</tt></td>
   </tr>
   <tr>
     <td><tt>['letsencryptaws']['data_bag']</tt></td>
