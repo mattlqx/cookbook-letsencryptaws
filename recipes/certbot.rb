@@ -27,32 +27,13 @@ python_package 'idna' do
   action :upgrade
 end
 
-python_package 'certbot'
+python_package 'certbot' do
+  version node['letsencryptaws']['certbot_version']
+  action :upgrade
+end
+
+python_package 'certbot-dns-route53'
 python_package 'awscli'
-
-package 'ruby'
-gem_package 'aws-sdk-route53'
-
-# Scripts for certbot hooks
-directory node['letsencryptaws']['scripts_dir'] do
-  recursive true
-  owner 'root'
-  group 'root'
-  mode '755'
-end
-
-%w[
-  certbot_route53_authenticator.rb
-  certbot_route53_cleanup.rb
-  dnschange.rb
-].each do |file|
-  cookbook_file ::File.join(node['letsencryptaws']['scripts_dir'], file) do
-    owner 'root'
-    group 'root'
-    mode '755'
-    source file
-  end
-end
 
 # Local certificate storage
 directory node['letsencryptaws']['config_dir'] do
@@ -95,11 +76,9 @@ certs_needed.each_pair do |domain, sans|
 
   command = [
     'certbot certonly',
-    '--manual',
-    "--cert-name #{domain}",
-    '--preferred-challenges=dns',
-    "--manual-auth-hook #{::File.join(node['letsencryptaws']['scripts_dir'], 'certbot_route53_authenticator.rb')}",
-    "--manual-cleanup-hook #{::File.join(node['letsencryptaws']['scripts_dir'], 'certbot_route53_cleanup.rb')}",
+    "--cert-name #{domain.sub('*', 'star')}",
+    '--preferred-challenges dns',
+    '--dns-route53',
     "--email #{node['letsencryptaws']['email']}",
     '--agree-tos',
     '--non-interactive',
@@ -128,7 +107,7 @@ ruby_block 'remove unrequested certificates' do
     Dir.glob("#{node['letsencryptaws']['config_dir']}/live/*") do |fn|
       live_certs << ::File.basename(fn.sub(/-\d{4}$/, ''))
     end
-    certs_to_delete = live_certs - certs_needed.keys
+    certs_to_delete = live_certs - certs_needed.keys.map { |cn| cn.sub('*', 'star') }
 
     unless certs_to_delete.empty?
       Chef::Log.warn('Removing the following domains as they are no longer requested by any node: ' +

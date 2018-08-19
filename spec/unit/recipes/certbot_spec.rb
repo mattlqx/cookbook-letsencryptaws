@@ -26,26 +26,19 @@ describe 'letsencryptaws::certbot' do
   it 'installs needed packages' do
     expect(chef_run).to install_python_runtime('2.7')
     expect(chef_run).to upgrade_python_package('cryptography')
-    expect(chef_run).to install_python_package('certbot')
+    expect(chef_run).to upgrade_python_package('certbot')
+    expect(chef_run).to install_python_package('certbot-dns-route53')
     expect(chef_run).to install_python_package('awscli')
-    expect(chef_run).to install_package('ruby')
-    expect(chef_run).to install_gem_package('aws-sdk-route53')
+    expect(chef_run).to upgrade_python_package('idna')
   end
 
   it 'creates directories' do
     expect(chef_run).to create_directory('/mnt/letsencrypt')
-    expect(chef_run).to create_directory('/mnt/letsencrypt/scripts')
   end
 
   it 'creates filesystem and mounts' do
     expect(chef_run).to run_execute('mkfs.ext4 /dev/xvdf')
     expect(chef_run).to mount_mount('/mnt/letsencrypt')
-  end
-
-  it 'creates ruby scripts for certbot' do
-    expect(chef_run).to create_cookbook_file('/mnt/letsencrypt/scripts/certbot_route53_authenticator.rb')
-    expect(chef_run).to create_cookbook_file('/mnt/letsencrypt/scripts/certbot_route53_cleanup.rb')
-    expect(chef_run).to create_cookbook_file('/mnt/letsencrypt/scripts/dnschange.rb')
   end
 
   it 'fetches certificate for requested domain' do

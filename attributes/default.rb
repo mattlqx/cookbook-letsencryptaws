@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 # Paths
-default['letsencryptaws']['scripts_dir'] = '/mnt/letsencrypt/scripts'
 default['letsencryptaws']['config_dir'] = '/mnt/letsencrypt'
 default['letsencryptaws']['ebs_device'] = '/dev/xvdf'
+
+# Software versions
+default['letsencryptaws']['certbot_version'] = '0.26.1'
 
 # Should test certificates be fetched (beware: non-test certs have ratelimits)
 default['letsencryptaws']['test_certs'] = false

@@ -2,6 +2,11 @@
 
 This file is used to list changes made in each version of the letsencryptaws cookbook.
 
+## 1.1.0
+- [mattlqx] - Allow certbot version to be specified and upgraded.
+- [mattlqx] - Ditch custom Ruby for Route 53 authentication in favor of certbot-dns-route53.
+- [mattlqx] - Wildcard certificate support.
+
 ## 1.0.8
 - [mattlqx] - Add explicit python package version idna 2.6. Yay constaints.
 
