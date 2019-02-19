@@ -2,6 +2,10 @@
 
 This file is used to list changes made in each version of the letsencryptaws cookbook.
 
+## 1.1.1
+- [mattlqx] - Bump cryptography version to 2.5.
+- [mattlqx] - Pin pip version to 18.0 to prevent poise-python bug.
+
 ## 1.1.0
 - [mattlqx] - Allow certbot version to be specified and upgraded.
 - [mattlqx] - Ditch custom Ruby for Route 53 authentication in favor of certbot-dns-route53.
