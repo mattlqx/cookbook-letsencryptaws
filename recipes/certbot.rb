@@ -105,7 +105,7 @@ ruby_block 'remove unrequested certificates' do
   block do
     live_certs = []
     Dir.glob("#{node['letsencryptaws']['config_dir']}/live/*") do |fn|
-      next if fn == 'README'
+      next if ::File.basename(fn) == 'README'
       live_certs << ::File.basename(fn.sub(/-\d{4}$/, ''))
     end
     certs_to_delete = live_certs - certs_needed.keys.map { |cn| cn.sub('*', 'star') }
