@@ -18,7 +18,7 @@ python_runtime '2.7' do
 end
 
 python_package 'cryptography' do
-  version '2.5'
+  version '2.8'
   action :upgrade
 end
 

@@ -2,6 +2,13 @@
 
 This file is used to list changes made in each version of the letsencryptaws cookbook.
 
+## 1.1.4
+- [mattlqx] - Bump certbot and cryptography version.
+- [mattlqx] - Use enova version of poise-python. See [Berksfile](Berksfile) for how to source this in your environment.
+
+## 1.1.3
+- [mattlqx] - Ignore READMEs in syncing to s3.
+
 ## 1.1.1
 - [mattlqx] - Bump cryptography version to 2.5.
 - [mattlqx] - Pin pip version to 18.0 to prevent poise-python bug.
