@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 #
-# Cookbook Name:: letsencryptaws
+# Cookbook:: letsencryptaws
 # Recipe:: default
 #
-# Copyright 2018, Matt Kulka
+# Copyright:: 2020, Matt Kulka
 #
 
 group node['letsencryptaws']['ssl_group'] do
@@ -170,12 +170,14 @@ node['letsencryptaws']['certs'].each_pair do |domain, _sans|
     subscribes :run, "remote_file_s3[#{::File.join(node['letsencryptaws']['ssl_cert_dir'], "#{domain}.crt")}]", :delayed
   end
 
-  log "pkcs12 store needs generated for #{domain}" do
+  notify_block = proc do
     notifies :run, "execute[generate pkcs12 store for #{domain}]", :immediately
     not_if do
       File.exist?(::File.join(node['letsencryptaws']['ssl_key_dir'], "#{domain}.p12")) || creds('p12_password').nil?
     end
   end
+
+  send(respond_to?(:notify_group) ? :notify_group : :log, "pkcs12 store needs generated for #{domain}", &notify_block)
 
   file ::File.join(node['letsencryptaws']['ssl_key_dir'], "#{domain}.p12") do
     owner node['letsencryptaws']['ssl_owner']

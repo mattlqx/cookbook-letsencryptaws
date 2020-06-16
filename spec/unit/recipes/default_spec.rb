@@ -4,17 +4,17 @@ require 'ostruct'
 require 'spec_helper'
 
 describe 'letsencryptaws::default' do
-  let(:chef_run) { ChefSpec::SoloRunner.new }
+  platform 'ubuntu', '20.04'
+
+  override_attributes['letsencryptaws']['certs']['test.example.com'] = []
+  override_attributes['letsencryptaws']['data_bag'] = 'testbag'
+  override_attributes['letsencryptaws']['data_bag_item'] = 'testitem'
+  override_attributes['letsencryptaws']['sync_bucket'] = 'foobucket'
 
   before do
     allow(Etc).to receive(:getpwnam).and_return(OpenStruct.new(uid: 0))
     allow(Etc).to receive(:getgrnam).and_return(OpenStruct.new(gid: 0))
     stub_data_bag_item('testbag', 'testitem').and_return('p12_password' => 'foo')
-    chef_run.node.normal['letsencryptaws']['certs']['test.example.com'] = []
-    chef_run.node.normal['letsencryptaws']['data_bag'] = 'testbag'
-    chef_run.node.normal['letsencryptaws']['data_bag_item'] = 'testitem'
-    chef_run.node.normal['letsencryptaws']['sync_bucket'] = 'foobucket'
-    chef_run.converge(described_recipe)
   end
 
   it 'creates directories' do
@@ -53,17 +53,14 @@ describe 'letsencryptaws::default' do
     expect(chef_run).to nothing_execute('generate pkcs12 store for test.example.com')
     expect(chef_run.execute('generate pkcs12 store for test.example.com')).to \
       subscribe_to('remote_file_s3[/etc/ssl/certs/test.example.com.crt]').on(:run).delayed
-    expect(chef_run).to write_log('pkcs12 store needs generated for test.example.com')
-    expect(chef_run.log('pkcs12 store needs generated for test.example.com')).to \
+    expect(chef_run).to nothing_notify_group('pkcs12 store needs generated for test.example.com')
+    expect(chef_run.notify_group('pkcs12 store needs generated for test.example.com')).to \
       notify('execute[generate pkcs12 store for test.example.com]').to(:run).immediately
     expect(chef_run).to create_file('/etc/ssl/private/test.example.com.p12')
   end
 
   context 'when testing' do
-    before do
-      chef_run.node.normal['letsencryptaws']['test_certs'] = true
-      chef_run.converge(described_recipe)
-    end
+    override_attributes['letsencryptaws']['test_certs'] = true
 
     it 'updates ca certificates' do
       expect(chef_run).to create_remote_file('/usr/local/share/ca-certificates/fakeroot.crt')

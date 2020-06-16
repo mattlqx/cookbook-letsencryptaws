@@ -5,7 +5,11 @@ default['letsencryptaws']['config_dir'] = '/mnt/letsencrypt'
 default['letsencryptaws']['ebs_device'] = '/dev/xvdf'
 
 # Software versions
-default['letsencryptaws']['certbot_version'] = '1.0.0'
+default['letsencryptaws']['certbot_version'] = '1.5.0'
+default['letsencryptaws']['python_version'] = '3.8.3'
+
+# Should aws and certbot in /usr/local/bin be linked to their pyenv paths?
+default['letsencryptaws']['link_pybins'] = true
 
 # Should test certificates be fetched (beware: non-test certs have ratelimits)
 default['letsencryptaws']['test_certs'] = false
@@ -26,7 +30,7 @@ default['letsencryptaws']['sync_path'] = 'letsencrypt'
 default['letsencryptaws']['kms_key_id'] = nil
 
 # Don't fetch certificates with these exactly matching primary names
-default['letsencryptaws']['blacklist'] = []
+default['letsencryptaws']['blocklist'] = []
 
 # This is where certificates will be requested by your nodes
 default['letsencryptaws']['certs'] = {}

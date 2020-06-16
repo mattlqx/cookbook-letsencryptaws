@@ -1,11 +1,14 @@
 AllCops:
-  TargetRubyVersion: 2.4
+  TargetRubyVersion: 2.7
 
-Metrics/LineLength:
+Layout/LineLength:
   Severity: refactor
   Max: 120
 
-Style/TrailingCommaInLiteral:
+Style/TrailingCommaInArrayLiteral:
+  Enabled: false
+
+Style/TrailingCommaInHashLiteral:
   Enabled: false
 
 Lint/ParenthesesAsGroupedExpression:
@@ -17,7 +20,7 @@ Metrics/BlockLength:
 Metrics/MethodLength:
   Enabled: false
 
-Layout/IndentHeredoc:
+Layout/HeredocIndentation:
   Enabled: false
 
 Naming/HeredocDelimiterNaming:

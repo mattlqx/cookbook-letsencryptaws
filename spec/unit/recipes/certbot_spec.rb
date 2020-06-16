@@ -3,7 +3,15 @@
 require 'spec_helper'
 
 describe 'letsencryptaws::certbot' do
-  let(:chef_run) { ChefSpec::SoloRunner.new }
+  platform 'ubuntu', '20.04'
+
+  default_attributes['ec2'] = {}
+  default_attributes['pyenv']['git_url'] = 'https://github.com/pyenv/pyenv.git'
+  default_attributes['pyenv']['git_ref'] = 'master'
+  override_attributes['letsencryptaws']['sync_bucket'] = 'foo'
+  override_attributes['letsencryptaws']['certs']['test.example.com'] = []
+  override_attributes['letsencryptaws']['data_bag'] = 'testbag'
+  override_attributes['letsencryptaws']['data_bag_item'] = 'testitem'
 
   before do
     allow(File).to receive(:blockdev?).with('/dev/xvdf').and_return(true)
@@ -11,12 +19,6 @@ describe 'letsencryptaws::certbot' do
     stub_search('node', 'letsencryptaws_certs_*:*').and_return([])
     stub_command('[ -d /mnt/letsencrypt/live ]').and_return(true)
     stub_command('fsck.ext4 -n /dev/xvdf').and_return(false)
-    chef_run.node.default['ec2'] = {}
-    chef_run.node.normal['letsencryptaws']['sync_bucket'] = 'foo'
-    chef_run.node.normal['letsencryptaws']['certs']['test.example.com'] = []
-    chef_run.node.normal['letsencryptaws']['data_bag'] = 'testbag'
-    chef_run.node.normal['letsencryptaws']['data_bag_item'] = 'testitem'
-    chef_run.converge(described_recipe)
   end
 
   it 'updates apt repo' do
@@ -24,12 +26,13 @@ describe 'letsencryptaws::certbot' do
   end
 
   it 'installs needed packages' do
-    expect(chef_run).to install_python_runtime('2.7')
-    expect(chef_run).to upgrade_python_package('cryptography')
-    expect(chef_run).to upgrade_python_package('certbot')
-    expect(chef_run).to install_python_package('certbot-dns-route53')
-    expect(chef_run).to install_python_package('awscli')
-    expect(chef_run).to upgrade_python_package('idna')
+    expect(chef_run).to install_pyenv_system_install('system')
+    expect(chef_run).to install_pyenv_python('3.8.3')
+    expect(chef_run).to install_pyenv_pip('cryptography')
+    expect(chef_run).to install_pyenv_pip('certbot')
+    expect(chef_run).to install_pyenv_pip('certbot-dns-route53')
+    expect(chef_run).to install_pyenv_pip('awscli')
+    expect(chef_run).to install_pyenv_pip('idna')
   end
 
   it 'creates directories' do
