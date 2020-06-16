@@ -6,7 +6,7 @@ Nodes do not need to be EC2 instances to retrieve or request certificates. All t
 
 ## Requirements
 
-- Python 2.7 (for certbot and awscli)
+- Python 3 or 2.7 (for certbot and awscli)
 - certbot ACME client
 - Domain(s) hosted by AWS Route 53
 - S3 bucket for storing/retrieving certificate files
@@ -22,7 +22,7 @@ The goal for certificate retrieval is to support Windows but for now, Ubuntu onl
 ### Cookbooks
 
 - `remote_file_s3` - To grab certificates from S3
-- `poise-python` - For grabbing awscli for certificate syncing.
+- `pyenv` - For grabbing Python environment that certbot recipe uses to install `awscli` and `certbot`.
 
 ## Usage
 
@@ -34,7 +34,7 @@ Set the `certs` attribute as described below and then include this recipe in you
 
 The flow looks like this:
 - First Chef run on requesting node. Attribute (`['letsencryptaws']['certs']['example.com'] = []`) gets saved to server (probably created dynamically by a cookbook). Default cert/key gets saved to node from S3.
-- Chef run on 'certbot' host. Requests certificate and uploads to S3.
+- Chef runs on host with 'letsencryptaws::certbot' in its run_list. Requests certificate and uploads to S3.
 - Second Chef run on requesting node overwrites the previously saved default cert/key with real cert/key from S3.
 
 Any service that uses a certificate provided by this recipe should subscribe to one of the certificate file resources so that it can be reloaded when the certificate is renewed. For example:
@@ -202,16 +202,22 @@ This recipe is automatically included if the `import_keystore` hash is not empty
     <td><tt>nil</tt></td>
   </tr>
   <tr>
-    <td><tt>['letsencryptaws']['blacklist']</tt></td>
+    <td><tt>['letsencryptaws']['blocklist']</tt></td>
     <td>array of strings</td>
     <td>Exact matches of primary certificate name to prevent generation</td>
     <td><tt>[]</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['letsencryptaws']['link_pybins']</tt></td>
+    <td>boolean</td>
+    <td>Link <tt>aws</tt> and <tt>certbot</tt> in /usr/local/bin to pyenv paths if true
+    <td><tt>true</tt></td>
   </tr>
 </table>
 
 ## Data Bags
 
-A data bag is used to store sensitive credential information for AWS and Java keystores. You can arbitrarily specify the name and item name with `node['letsencryptaws']['data_bag']` and `node['letsencryptaws']['data_bag_item']` attributes.
+A data bag is used to store sensitive credential information for AWS and Java keystores. You can arbitrarily specify the name and item name with `node['letsencryptaws']['data_bag']` and `node['letsencryptaws']['data_bag_item']` attributes. If you do not wish to use a data bag, you can place the credentials following the same hash structure at `node.run_state['letsencryptaws_creds']`.
 
 The keys inside the data bag item can be:
 

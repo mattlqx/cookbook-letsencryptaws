@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 #
-# Cookbook Name:: letsencryptaws
+# Cookbook:: letsencryptaws
 # Recipe:: import_keystore
 #
-# Copyright 2018, Matt Kulka
+# Copyright:: 2020, Matt Kulka
 #
 
 package node['letsencryptaws']['java_package']
@@ -15,7 +15,7 @@ node['letsencryptaws']['import_keystore'].each_pair do |keystore, domains|
       command 'keytool -importkeystore -noprompt' \
               "  -srckeystore #{File.join(node['letsencryptaws']['ssl_key_dir'], "#{domain}.p12")} " \
               "  -destkeystore #{keystore} -srcstorepass \"#{creds('p12_password')}\" -deststorepass " \
-              "  \"#{creds('keystore_passwords').fetch(keystore, creds('keystore_passwords')['default'])}\"" # rubocop:disable Metrics/LineLength
+              "  \"#{creds('keystore_passwords').fetch(keystore, creds('keystore_passwords')['default'])}\""
       subscribes :run, "execute[generate pkcs12 store for #{domain}]", :immediately
       sensitive true
       action :nothing

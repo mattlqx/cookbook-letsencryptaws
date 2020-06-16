@@ -2,6 +2,14 @@
 
 This file is used to list changes made in each version of the letsencryptaws cookbook.
 
+## 2.0.0
+- [mattlqx] - Switch from poise-python to pyenv cookbooks for Python management. 😔
+- [mattlqx] - Change `node['letsencryptaws']['blacklist']` to `node['letsencryptaws']['blocklist']`.
+- [mattlqx] - Change `node.run_state['creds']` to `node.run_state['letsencryptaws_creds']` to optionally use in place of data bag.
+- [mattlqx] - Support Ubuntu 20.04 and Python 3.
+- [mattlqx] - Force `parsedatetime` version to 2.5 with Python 2.
+- [mattlqx] - Use new ChefSpec syntax.
+
 ## 1.1.4
 - [mattlqx] - Bump certbot and cryptography version.
 - [mattlqx] - Use enova version of poise-python. See [Berksfile](Berksfile) for how to source this in your environment.

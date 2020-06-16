@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 #
-# Cookbook Name:: letsencryptaws
+# Cookbook:: letsencryptaws
 # Recipe:: certbot
 #
-# Copyright 2018, Matt Kulka
+# Copyright:: 2020, Matt Kulka
 #
 
 # Dependencies for certbot
@@ -12,28 +12,46 @@ apt_update 'update' do
   action :periodic
 end
 
-python_runtime '2.7' do
-  pip_version true
-  options :system
+python_major = node['letsencryptaws']['python_version'].split('.').first.to_i
+
+pyenv_system_install 'system'
+
+pyenv_python node['letsencryptaws']['python_version']
+
+pyenv_global node['letsencryptaws']['python_version']
+
+pyenv_pip 'parsedatetime' do
+  version '2.5'
+  only_if do
+    node['letsencryptaws']['python_version'].to_s.start_with?('2.7') || \
+      node['letsencryptaws']['python_version'].to_s == '2'
+  end
 end
 
-python_package 'cryptography' do
-  version '2.8'
-  action :upgrade
+pyenv_pip 'cryptography' do
+  version python_major >= 3 ? '2.9.2' : '2.8'
 end
 
-python_package 'idna' do
-  version '2.6'
-  action :upgrade
+pyenv_pip 'idna' do
+  version python_major >= 3 ? '2.9' : '2.6'
 end
 
-python_package 'certbot' do
+pyenv_pip 'certbot' do
   version node['letsencryptaws']['certbot_version']
-  action :upgrade
 end
 
-python_package 'certbot-dns-route53'
-python_package 'awscli'
+pyenv_pip 'certbot-dns-route53'
+pyenv_pip 'awscli'
+
+link '/usr/local/bin/certbot' do
+  to "/usr/local/pyenv/versions/#{node['letsencryptaws']['python_version']}/bin/certbot"
+  only_if { node['letsencryptaws']['link_pybins'] }
+end
+
+link '/usr/local/bin/aws' do
+  to "/usr/local/pyenv/versions/#{node['letsencryptaws']['python_version']}/bin/aws"
+  only_if { node['letsencryptaws']['link_pybins'] }
+end
 
 # Local certificate storage
 directory node['letsencryptaws']['config_dir'] do
@@ -51,13 +69,13 @@ end
 mount node['letsencryptaws']['config_dir'] do
   device node['letsencryptaws']['ebs_device']
   fstype 'ext4'
-  action %i[mount enable]
+  action %i(mount enable)
   only_if { node.attribute?('ec2') && ::File.blockdev?(node['letsencryptaws']['ebs_device']) }
 end
 
 # Determine domains we need certificates for
 certs_needed = {}
-nodes = search(:node, 'letsencryptaws_certs_*:*') << node # ~FC003
+nodes = search(:node, 'letsencryptaws_certs_*:*') << node
 nodes.each do |n|
   certs_needed.merge!(n['letsencryptaws']['certs']) do |_k, oldv, newv|
     oldv | newv
@@ -69,13 +87,13 @@ return if node.attribute?('ec2') && !::File.blockdev?(node['letsencryptaws']['eb
 
 certs_needed.each_pair do |domain, sans|
   # Skip certs that may be ratelimited
-  if node['letsencryptaws']['blacklist'].include?(domain)
-    Chef::Log.warn("Skipping processing of #{domain} because it is blacklisted.")
+  if node['letsencryptaws']['blocklist'].include?(domain)
+    Chef::Log.warn("Skipping processing of #{domain} because it is blocklisted.")
     next
   end
 
   command = [
-    'certbot certonly',
+    "/usr/local/pyenv/versions/#{node['letsencryptaws']['python_version']}/bin/certbot certonly",
     "--cert-name #{domain.sub('*', 'star')}",
     '--preferred-challenges dns',
     '--dns-route53',
@@ -115,9 +133,7 @@ ruby_block 'remove unrequested certificates' do
                      certs_to_delete.join(', '))
     end
     certs_to_delete.each do |domain|
-      Mixlib::ShellOut.new(
-        "certbot delete -n --config-dir #{node['letsencryptaws']['config_dir']} --cert-name #{domain}"
-      ).run_command.error!
+      shell_out("certbot delete -n --config-dir #{node['letsencryptaws']['config_dir']} --cert-name #{domain}").error!
     end
   end
   only_if { node['letsencryptaws']['remove_unused_certs'] }
@@ -130,7 +146,7 @@ end
 
 execute 'sync certificates to s3' do
   command [
-    'aws s3 sync',
+    "/usr/local/pyenv/versions/#{node['letsencryptaws']['python_version']}/bin/aws s3 sync",
     '--delete',
     '--exclude \'default-ssl/*\'',
     kms,

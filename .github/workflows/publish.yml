@@ -1,0 +1,39 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Publish
+
+on:
+  release:
+    types: [published]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  supermarket:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-18.04
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+
+    # Runs a single command using the runners shell
+    - name: Setup Ruby
+      uses: ruby/setup-ruby@v1.38.0
+      with:
+        # Engine and version to use, see the syntax in the README. Reads from .ruby-version or .tool-versions if unset.
+        ruby-version: 2.7
+        # The version of Bundler to install. Either none, 1, 2, latest or Gemfile.lock. The default tries Gemfile.lock and otherwise uses latest.
+        bundler: 2
+        bundler-cache: true
+
+    # Runs a set of commands using the runners shell
+    - name: Install Gems
+      run: bundle install
+    - name: Publish to Supermarket
+      env:
+        SUPERMARKET_PEM: ${{ secrets.SUPERMARKET_PEM }}
+      run: |
+        echo "$SUPERMARKET_PEM" > /tmp/supermarket.pem
+        bundle exec knife supermarket share -o .. --config-option=node_name=mkulka --config-option=client_key=/tmp/supermarket.pem letsencryptaws

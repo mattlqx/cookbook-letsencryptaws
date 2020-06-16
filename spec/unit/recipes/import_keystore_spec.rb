@@ -3,18 +3,18 @@
 require 'spec_helper'
 
 describe 'letsencryptaws::import_keystore' do
-  let(:chef_run) { ChefSpec::SoloRunner.new }
+  platform 'ubuntu', '20.04'
+
+  override_attributes['letsencryptaws']['certs']['test.example.com'] = []
+  override_attributes['letsencryptaws']['data_bag'] = 'testbag'
+  override_attributes['letsencryptaws']['data_bag_item'] = 'testitem'
+  override_attributes['letsencryptaws']['import_keystore']['/tmp/foo'] = ['test.example.com']
 
   before do
     stub_data_bag_item('testbag', 'testitem').and_return(
       'p12_password' => 'foo',
       'keystore_passwords' => { 'default' => 'bar' }
     )
-    chef_run.node.normal['letsencryptaws']['certs']['test.example.com'] = []
-    chef_run.node.normal['letsencryptaws']['data_bag'] = 'testbag'
-    chef_run.node.normal['letsencryptaws']['data_bag_item'] = 'testitem'
-    chef_run.node.normal['letsencryptaws']['import_keystore']['/tmp/foo'] = ['test.example.com']
-    chef_run.converge(described_recipe)
   end
 
   it 'installs java' do
