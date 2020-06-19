@@ -29,8 +29,8 @@ end
 remote_file_s3 ::File.join(node['letsencryptaws']['ssl_cert_dir'], 'default.crt') do
   remote_path "/#{node['letsencryptaws']['sync_path']}/default-ssl/default.crt"
   bucket node['letsencryptaws']['sync_bucket']
-  aws_access_key_id node['aws_access_key_id'] || creds('aws_access_key_id')
-  aws_secret_access_key node['aws_secret_access_key'] || creds('aws_secret_access_key')
+  aws_access_key_id lazy { node['aws_access_key_id'] || creds('aws_access_key_id') }
+  aws_secret_access_key lazy { node['aws_secret_access_key'] || creds('aws_secret_access_key') }
   owner node['letsencryptaws']['ssl_owner']
   group node['letsencryptaws']['ssl_group']
   mode '644'
@@ -40,8 +40,8 @@ end
 remote_file_s3 ::File.join(node['letsencryptaws']['ssl_cert_dir'], 'default.ca') do
   remote_path "/#{node['letsencryptaws']['sync_path']}/default-ssl/ca.crt"
   bucket node['letsencryptaws']['sync_bucket']
-  aws_access_key_id node['aws_access_key_id'] || creds('aws_access_key_id')
-  aws_secret_access_key node['aws_secret_access_key'] || creds('aws_secret_access_key')
+  aws_access_key_id lazy { node['aws_access_key_id'] || creds('aws_access_key_id') }
+  aws_secret_access_key lazy { node['aws_secret_access_key'] || creds('aws_secret_access_key') }
   owner node['letsencryptaws']['ssl_owner']
   group node['letsencryptaws']['ssl_group']
   mode '644'
@@ -51,8 +51,8 @@ end
 remote_file_s3 ::File.join(node['letsencryptaws']['ssl_key_dir'], 'default.key') do
   remote_path "/#{node['letsencryptaws']['sync_path']}/default-ssl/default.key"
   bucket node['letsencryptaws']['sync_bucket']
-  aws_access_key_id node['aws_access_key_id'] || creds('aws_access_key_id')
-  aws_secret_access_key node['aws_secret_access_key'] || creds('aws_secret_access_key')
+  aws_access_key_id lazy { node['aws_access_key_id'] || creds('aws_access_key_id') }
+  aws_secret_access_key lazy { node['aws_secret_access_key'] || creds('aws_secret_access_key') }
   owner node['letsencryptaws']['ssl_owner']
   group node['letsencryptaws']['ssl_group']
   mode '640'
@@ -81,8 +81,8 @@ node['letsencryptaws']['certs'].each_pair do |domain, _sans|
   remote_file_s3 ::File.join(node['letsencryptaws']['ssl_cert_dir'], "#{domain}.crt") do
     remote_path "/#{node['letsencryptaws']['sync_path']}/#{domain}/cert.pem"
     bucket node['letsencryptaws']['sync_bucket']
-    aws_access_key_id node['aws_access_key_id'] || creds('aws_access_key_id')
-    aws_secret_access_key node['aws_secret_access_key'] || creds('aws_secret_access_key')
+    aws_access_key_id lazy { node['aws_access_key_id'] || creds('aws_access_key_id') }
+    aws_secret_access_key lazy { node['aws_secret_access_key'] || creds('aws_secret_access_key') }
     owner node['letsencryptaws']['ssl_owner']
     group node['letsencryptaws']['ssl_group']
     mode '644'
@@ -94,8 +94,8 @@ node['letsencryptaws']['certs'].each_pair do |domain, _sans|
   remote_file_s3 ::File.join(node['letsencryptaws']['ssl_cert_dir'], "#{domain}.ca") do
     remote_path "/#{node['letsencryptaws']['sync_path']}/#{domain}/chain.pem"
     bucket node['letsencryptaws']['sync_bucket']
-    aws_access_key_id node['aws_access_key_id'] || creds('aws_access_key_id')
-    aws_secret_access_key node['aws_secret_access_key'] || creds('aws_secret_access_key')
+    aws_access_key_id lazy { node['aws_access_key_id'] || creds('aws_access_key_id') }
+    aws_secret_access_key lazy { node['aws_secret_access_key'] || creds('aws_secret_access_key') }
     owner node['letsencryptaws']['ssl_owner']
     group node['letsencryptaws']['ssl_group']
     mode '644'
@@ -107,8 +107,8 @@ node['letsencryptaws']['certs'].each_pair do |domain, _sans|
   remote_file_s3 ::File.join(node['letsencryptaws']['ssl_key_dir'], "#{domain}.key") do
     remote_path "/#{node['letsencryptaws']['sync_path']}/#{domain}/privkey.pem"
     bucket node['letsencryptaws']['sync_bucket']
-    aws_access_key_id node['aws_access_key_id'] || creds('aws_access_key_id')
-    aws_secret_access_key node['aws_secret_access_key'] || creds('aws_secret_access_key')
+    aws_access_key_id lazy { node['aws_access_key_id'] || creds('aws_access_key_id') }
+    aws_secret_access_key lazy { node['aws_secret_access_key'] || creds('aws_secret_access_key') }
     owner node['letsencryptaws']['ssl_owner']
     group node['letsencryptaws']['ssl_group']
     mode '640'
@@ -158,11 +158,13 @@ node['letsencryptaws']['certs'].each_pair do |domain, _sans|
   execute "generate pkcs12 store for #{domain}" do
     cwd node['letsencryptaws']['ssl_key_dir']
     only_if { node['os'] == 'linux' }
-    command "openssl pkcs12 -export -in #{File.join(node['letsencryptaws']['ssl_cert_dir'], "#{domain}.crt")}" \
-            "  -inkey #{domain}.key -out #{domain}.p12 -name #{domain} " \
-            "  -passout \"pass:#{creds('p12_password')}\"" \
-            "  -CAfile #{File.join(node['letsencryptaws']['ssl_cert_dir'], "#{domain}.ca")}" \
-            "  -CApath #{node['letsencryptaws']['root_ca_dir']} -caname letsencrypt -chain"
+    command lazy {
+              "openssl pkcs12 -export -in #{File.join(node['letsencryptaws']['ssl_cert_dir'], "#{domain}.crt")}" \
+                   "  -inkey #{domain}.key -out #{domain}.p12 -name #{domain} " \
+                   "  -passout \"pass:#{creds('p12_password')}\"" \
+                   "  -CAfile #{File.join(node['letsencryptaws']['ssl_cert_dir'], "#{domain}.ca")}" \
+                   "  -CApath #{node['letsencryptaws']['root_ca_dir']} -caname letsencrypt -chain"
+            }
     action :nothing
     sensitive true
     only_if "openssl verify -CAfile #{::File.join(node['letsencryptaws']['ssl_cert_dir'], "#{domain}.ca")} " \
