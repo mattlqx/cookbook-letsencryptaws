@@ -111,10 +111,12 @@ certs_needed.each_pair do |domain, sans|
 
   execute "get certificate for #{domain}" do
     command command.join(' ')
-    environment ({
-      'AWS_ACCESS_KEY_ID' => node['aws_access_key_id'] || creds('aws_access_key_id'),
-      'AWS_SECRET_ACCESS_KEY' => node['aws_secret_access_key'] || creds('aws_secret_access_key'),
-    })
+    environment (lazy do
+      {
+        'AWS_ACCESS_KEY_ID' => node['aws_access_key_id'] || creds('aws_access_key_id'),
+        'AWS_SECRET_ACCESS_KEY' => node['aws_secret_access_key'] || creds('aws_secret_access_key'),
+      }
+    end)
     live_stream true
   end
 end
@@ -153,10 +155,12 @@ execute 'sync certificates to s3' do
     "#{node['letsencryptaws']['config_dir']}/live/",
     "s3://#{node['letsencryptaws']['sync_bucket']}/#{node['letsencryptaws']['sync_path']}",
   ].join(' ')
-  environment ({
-    'AWS_ACCESS_KEY_ID' => node['aws_access_key_id'] || creds('aws_access_key_id'),
-    'AWS_SECRET_ACCESS_KEY' => node['aws_secret_access_key'] || creds('aws_secret_access_key'),
-  })
+  environment (lazy do
+    {
+      'AWS_ACCESS_KEY_ID' => node['aws_access_key_id'] || creds('aws_access_key_id'),
+      'AWS_SECRET_ACCESS_KEY' => node['aws_secret_access_key'] || creds('aws_secret_access_key'),
+    }
+  end)
   live_stream true
   only_if "[ -d #{node['letsencryptaws']['config_dir']}/live ]"
   not_if { node['letsencryptaws']['sync_bucket'].nil? }
