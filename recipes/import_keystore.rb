@@ -14,9 +14,9 @@ node['letsencryptaws']['import_keystore'].each_pair do |keystore, domains|
     execute "import #{domain} into #{keystore}" do
       command lazy {
                 'keytool -importkeystore -noprompt' \
-                     "  -srckeystore #{File.join(node['letsencryptaws']['ssl_key_dir'], "#{domain}.p12")} " \
-                     "  -destkeystore #{keystore} -srcstorepass \"#{creds('p12_password')}\" -deststorepass " \
-                     "  \"#{creds('keystore_passwords').fetch(keystore, creds('keystore_passwords')['default'])}\""
+                "  -srckeystore #{File.join(node['letsencryptaws']['ssl_key_dir'], "#{domain}.p12")} " \
+                "  -destkeystore #{keystore} -srcstorepass \"#{aws_creds('p12_password')}\" -deststorepass " \
+                "  \"#{aws_creds('keystore_passwords').fetch(keystore, aws_creds('keystore_passwords')['default'])}\""
               }
       subscribes :run, "execute[generate pkcs12 store for #{domain}]", :immediately
       sensitive true

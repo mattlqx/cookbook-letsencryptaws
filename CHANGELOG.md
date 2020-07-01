@@ -2,6 +2,12 @@
 
 This file is used to list changes made in each version of the letsencryptaws cookbook.
 
+## 2.0.2
+- [mattlqx] - change method name from `creds` to `aws_creds` to not conflict with remote_file_s3.
+
+## 2.0.1
+- [mattlqx] - lazy evaluate credentials
+
 ## 2.0.0
 - [mattlqx] - Switch from poise-python to pyenv cookbooks for Python management. 😔
 - [mattlqx] - Change `node['letsencryptaws']['blacklist']` to `node['letsencryptaws']['blocklist']`.
