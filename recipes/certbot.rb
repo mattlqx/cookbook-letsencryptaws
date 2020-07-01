@@ -113,8 +113,8 @@ certs_needed.each_pair do |domain, sans|
     command command.join(' ')
     environment (lazy do
       {
-        'AWS_ACCESS_KEY_ID' => node['aws_access_key_id'] || creds('aws_access_key_id'),
-        'AWS_SECRET_ACCESS_KEY' => node['aws_secret_access_key'] || creds('aws_secret_access_key'),
+        'AWS_ACCESS_KEY_ID' => node['aws_access_key_id'] || aws_creds('aws_access_key_id'),
+        'AWS_SECRET_ACCESS_KEY' => node['aws_secret_access_key'] || aws_creds('aws_secret_access_key'),
       }
     end)
     live_stream true
@@ -157,8 +157,8 @@ execute 'sync certificates to s3' do
   ].join(' ')
   environment (lazy do
     {
-      'AWS_ACCESS_KEY_ID' => node['aws_access_key_id'] || creds('aws_access_key_id'),
-      'AWS_SECRET_ACCESS_KEY' => node['aws_secret_access_key'] || creds('aws_secret_access_key'),
+      'AWS_ACCESS_KEY_ID' => node['aws_access_key_id'] || aws_creds('aws_access_key_id'),
+      'AWS_SECRET_ACCESS_KEY' => node['aws_secret_access_key'] || aws_creds('aws_secret_access_key'),
     }
   end)
   live_stream true
