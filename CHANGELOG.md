@@ -2,6 +2,9 @@
 
 This file is used to list changes made in each version of the letsencryptaws cookbook.
 
+## 2.0.3
+- [mattlqx] - prevent group resource from clobbering members
+
 ## 2.0.2
 - [mattlqx] - change method name from `creds` to `aws_creds` to not conflict with remote_file_s3.
 
