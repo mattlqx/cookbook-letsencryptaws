@@ -34,6 +34,7 @@ jobs:
     - name: Publish to Supermarket
       env:
         SUPERMARKET_PEM: ${{ secrets.SUPERMARKET_PEM }}
+        CHEF_LICENSE: accept-no-persist
       run: |
         echo "$SUPERMARKET_PEM" > /tmp/supermarket.pem
         bundle exec knife supermarket share -o .. -c $GITHUB_WORKSPACE/.github/knife.rb --config-option=node_name=mkulka --config-option=client_key=/tmp/supermarket.pem letsencryptaws

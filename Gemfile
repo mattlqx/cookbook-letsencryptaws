@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 
 gem 'aws-sdk-route53'
 gem 'berkshelf'
-gem 'chef', '~> 16.1.16'
+gem 'chef', '~> 16.1'
 gem 'chefspec', '~> 9.1.0'
 gem 'cookstyle', '~> 6.8.0'
 gem 'kitchen-sync'

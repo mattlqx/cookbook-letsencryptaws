@@ -8,6 +8,7 @@
 #
 
 group node['letsencryptaws']['ssl_group'] do
+  append true
   action :create
 end
 
