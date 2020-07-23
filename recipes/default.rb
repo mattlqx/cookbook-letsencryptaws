@@ -32,6 +32,7 @@ remote_file_s3 ::File.join(node['letsencryptaws']['ssl_cert_dir'], 'default.crt'
   bucket node['letsencryptaws']['sync_bucket']
   aws_access_key_id lazy { node['aws_access_key_id'] || aws_creds('aws_access_key_id') }
   aws_secret_access_key lazy { node['aws_secret_access_key'] || aws_creds('aws_secret_access_key') }
+  aws_session_token lazy { node['aws_session_token'] || aws_creds('aws_session_token') }
   owner node['letsencryptaws']['ssl_owner']
   group node['letsencryptaws']['ssl_group']
   mode '644'
@@ -43,6 +44,7 @@ remote_file_s3 ::File.join(node['letsencryptaws']['ssl_cert_dir'], 'default.ca')
   bucket node['letsencryptaws']['sync_bucket']
   aws_access_key_id lazy { node['aws_access_key_id'] || aws_creds('aws_access_key_id') }
   aws_secret_access_key lazy { node['aws_secret_access_key'] || aws_creds('aws_secret_access_key') }
+  aws_session_token lazy { node['aws_session_token'] || aws_creds('aws_session_token') }
   owner node['letsencryptaws']['ssl_owner']
   group node['letsencryptaws']['ssl_group']
   mode '644'
@@ -54,6 +56,7 @@ remote_file_s3 ::File.join(node['letsencryptaws']['ssl_key_dir'], 'default.key')
   bucket node['letsencryptaws']['sync_bucket']
   aws_access_key_id lazy { node['aws_access_key_id'] || aws_creds('aws_access_key_id') }
   aws_secret_access_key lazy { node['aws_secret_access_key'] || aws_creds('aws_secret_access_key') }
+  aws_session_token lazy { node['aws_session_token'] || aws_creds('aws_session_token') }
   owner node['letsencryptaws']['ssl_owner']
   group node['letsencryptaws']['ssl_group']
   mode '640'
@@ -84,6 +87,7 @@ node['letsencryptaws']['certs'].each_pair do |domain, _sans|
     bucket node['letsencryptaws']['sync_bucket']
     aws_access_key_id lazy { node['aws_access_key_id'] || aws_creds('aws_access_key_id') }
     aws_secret_access_key lazy { node['aws_secret_access_key'] || aws_creds('aws_secret_access_key') }
+    aws_session_token lazy { node['aws_session_token'] || aws_creds('aws_session_token') }
     owner node['letsencryptaws']['ssl_owner']
     group node['letsencryptaws']['ssl_group']
     mode '644'
@@ -97,6 +101,7 @@ node['letsencryptaws']['certs'].each_pair do |domain, _sans|
     bucket node['letsencryptaws']['sync_bucket']
     aws_access_key_id lazy { node['aws_access_key_id'] || aws_creds('aws_access_key_id') }
     aws_secret_access_key lazy { node['aws_secret_access_key'] || aws_creds('aws_secret_access_key') }
+    aws_session_token lazy { node['aws_session_token'] || aws_creds('aws_session_token') }
     owner node['letsencryptaws']['ssl_owner']
     group node['letsencryptaws']['ssl_group']
     mode '644'
@@ -110,6 +115,7 @@ node['letsencryptaws']['certs'].each_pair do |domain, _sans|
     bucket node['letsencryptaws']['sync_bucket']
     aws_access_key_id lazy { node['aws_access_key_id'] || aws_creds('aws_access_key_id') }
     aws_secret_access_key lazy { node['aws_secret_access_key'] || aws_creds('aws_secret_access_key') }
+    aws_session_token lazy { node['aws_session_token'] || aws_creds('aws_session_token') }
     owner node['letsencryptaws']['ssl_owner']
     group node['letsencryptaws']['ssl_group']
     mode '640'

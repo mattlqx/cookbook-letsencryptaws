@@ -115,6 +115,7 @@ certs_needed.each_pair do |domain, sans|
       {
         'AWS_ACCESS_KEY_ID' => node['aws_access_key_id'] || aws_creds('aws_access_key_id'),
         'AWS_SECRET_ACCESS_KEY' => node['aws_secret_access_key'] || aws_creds('aws_secret_access_key'),
+        'AWS_SESSION_TOKEN' => node['aws_session_token'] || aws_creds('aws_session_token'),
       }
     end)
     live_stream true
@@ -159,6 +160,7 @@ execute 'sync certificates to s3' do
     {
       'AWS_ACCESS_KEY_ID' => node['aws_access_key_id'] || aws_creds('aws_access_key_id'),
       'AWS_SECRET_ACCESS_KEY' => node['aws_secret_access_key'] || aws_creds('aws_secret_access_key'),
+      'AWS_SESSION_TOKEN' => node['aws_session_token'] || aws_creds('aws_session_token'),
     }
   end)
   live_stream true
