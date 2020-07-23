@@ -5,7 +5,7 @@ maintainer       'Matt Kulka'
 maintainer_email 'matt@lqx.net'
 license          'MIT'
 description      'Procures Let\'s Encrypt SSL certificates for Route 53-hosted domains'
-version          '2.0.3'
+version          '2.0.4'
 
 supports     'ubuntu'
 chef_version '>= 12'
