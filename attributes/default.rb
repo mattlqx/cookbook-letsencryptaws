@@ -47,6 +47,7 @@ when 'windows'
   default['letsencryptaws']['root_ca_dir'] = 'c:\ssl\certs'
   default['letsencryptaws']['ssl_owner'] = 'SYSTEM'
   default['letsencryptaws']['ssl_group'] = nil
+  default['letsencryptaws']['aws_credentials_file'] = 'C:\chef\awscredentials'
 when 'ubuntu'
   default['letsencryptaws']['ssl_cert_dir'] = '/etc/ssl/certs'
   default['letsencryptaws']['ssl_key_dir'] = '/etc/ssl/private'
@@ -54,4 +55,5 @@ when 'ubuntu'
   default['letsencryptaws']['root_ca_dir'] = '/etc/ssl/certs'
   default['letsencryptaws']['ssl_owner'] = 'root'
   default['letsencryptaws']['ssl_group'] = 'ssl-cert'
+  default['letsencryptaws']['aws_credentials_file'] = '/tmp/aws/credentials'
 end
