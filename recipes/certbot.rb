@@ -29,7 +29,7 @@ pyenv_pip 'parsedatetime' do
 end
 
 pyenv_pip 'cryptography' do
-  version python_major >= 3 ? '2.9.2' : '2.8'
+  version python_major >= 3 ? '3.4.6' : '2.8'
 end
 
 pyenv_pip 'idna' do
