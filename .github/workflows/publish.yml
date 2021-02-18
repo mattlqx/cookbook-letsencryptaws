@@ -32,4 +32,6 @@ jobs:
         CHEF_LICENSE: accept-no-persist
       run: |
         echo "$SUPERMARKET_PEM" > /tmp/supermarket.pem
-        bundle exec knife supermarket share -o $GITHUB_WORKSPACE/.. -c $GITHUB_WORKSPACE/.github/knife.rb --config-option=node_name=mkulka --config-option=client_key=/tmp/supermarket.pem letsencryptaws
+        cp -Rp $GITHUB_WORKSPACE /tmp
+        rm -fr /tmp/cookbook-letsencryptaws/vendor
+        bundle exec knife supermarket share -o /tmp -c $GITHUB_WORKSPACE/.github/knife.rb --config-option=node_name=mkulka --config-option=client_key=/tmp/supermarket.pem letsencryptaws
