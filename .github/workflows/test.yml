@@ -6,7 +6,7 @@ name: PR
 # events but only for the master branch
 on:
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -22,10 +22,8 @@ jobs:
 
     # Runs a single command using the runners shell
     - name: Setup Ruby
-      uses: ruby/setup-ruby@v1.38.0
+      uses: ruby/setup-ruby@v1.64.1
       with:
-        # Engine and version to use, see the syntax in the README. Reads from .ruby-version or .tool-versions if unset.
-        ruby-version: 2.7
         # The version of Bundler to install. Either none, 1, 2, latest or Gemfile.lock. The default tries Gemfile.lock and otherwise uses latest.
         bundler: 2
         bundler-cache: true
