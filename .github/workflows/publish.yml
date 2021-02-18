@@ -26,9 +26,6 @@ jobs:
         bundler: 2
         bundler-cache: true
 
-    # Runs a set of commands using the runners shell
-    - name: Install Gems
-      run: bundle install
     - name: Publish to Supermarket
       env:
         SUPERMARKET_PEM: ${{ secrets.SUPERMARKET_PEM }}

@@ -27,10 +27,6 @@ jobs:
         # The version of Bundler to install. Either none, 1, 2, latest or Gemfile.lock. The default tries Gemfile.lock and otherwise uses latest.
         bundler: 2
         bundler-cache: true
-
-    # Runs a set of commands using the runners shell
-    - name: Install Gems
-      run: bundle install
     - name: Cookstyle
       run: bundle exec cookstyle --version && bundle exec cookstyle --color --fail-level C .
     - name: RSpec
