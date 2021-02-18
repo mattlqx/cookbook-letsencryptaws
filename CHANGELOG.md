@@ -2,6 +2,9 @@
 
 This file is used to list changes made in each version of the letsencryptaws cookbook.
 
+## 2.0.5
+- [mattlqx] - version bumps for certbot and cryptography
+
 ## 2.0.4
 - [Akinari1087] - add aws_session_token to s3 resources
 

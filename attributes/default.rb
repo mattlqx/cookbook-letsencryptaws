@@ -5,7 +5,7 @@ default['letsencryptaws']['config_dir'] = '/mnt/letsencrypt'
 default['letsencryptaws']['ebs_device'] = '/dev/xvdf'
 
 # Software versions
-default['letsencryptaws']['certbot_version'] = '1.5.0'
+default['letsencryptaws']['certbot_version'] = '1.12.0'
 default['letsencryptaws']['python_version'] = '3.8.3'
 
 # Should aws and certbot in /usr/local/bin be linked to their pyenv paths?
