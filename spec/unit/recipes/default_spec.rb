@@ -14,6 +14,9 @@ describe 'letsencryptaws::default' do
   before do
     allow(Etc).to receive(:getpwnam).and_return(OpenStruct.new(uid: 0))
     allow(Etc).to receive(:getgrnam).and_return(OpenStruct.new(gid: 0))
+    allow(Dir).to receive(:exist?).and_call_original
+    allow(Dir).to receive(:exist?).with('/etc/ssl/certs').and_return(true)
+    allow(Dir).to receive(:exist?).with('/etc/ssl/private').and_return(true)
     stub_data_bag_item('testbag', 'testitem').and_return('p12_password' => 'foo')
   end
 

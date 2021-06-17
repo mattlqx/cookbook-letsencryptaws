@@ -2,6 +2,9 @@
 
 This file is used to list changes made in each version of the letsencryptaws cookbook.
 
+## 2.0.7
+- [mattlqx] - allow `node['letsencryptaws']['ebs_device']` to be nil to prevent mkfs, mount and check.
+
 ## 2.0.5
 - [mattlqx] - version bumps for certbot and cryptography
 

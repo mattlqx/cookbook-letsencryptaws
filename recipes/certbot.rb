@@ -61,16 +61,18 @@ directory node['letsencryptaws']['config_dir'] do
   recursive true
 end
 
-execute "mkfs.ext4 #{node['letsencryptaws']['ebs_device']}" do
-  not_if "fsck.ext4 -n #{node['letsencryptaws']['ebs_device']}"
-  only_if { node.attribute?('ec2') && ::File.blockdev?(node['letsencryptaws']['ebs_device']) }
-end
+unless node['letsencryptaws']['ebs_device'].nil?
+  execute "mkfs.ext4 #{node['letsencryptaws']['ebs_device']}" do
+    not_if "fsck.ext4 -n #{node['letsencryptaws']['ebs_device']}"
+    only_if { node.attribute?('ec2') && ::File.blockdev?(node['letsencryptaws']['ebs_device']) }
+  end
 
-mount node['letsencryptaws']['config_dir'] do
-  device node['letsencryptaws']['ebs_device']
-  fstype 'ext4'
-  action %i(mount enable)
-  only_if { node.attribute?('ec2') && ::File.blockdev?(node['letsencryptaws']['ebs_device']) }
+  mount node['letsencryptaws']['config_dir'] do
+    device node['letsencryptaws']['ebs_device']
+    fstype 'ext4'
+    action %i(mount enable)
+    only_if { node.attribute?('ec2') && ::File.blockdev?(node['letsencryptaws']['ebs_device']) }
+  end
 end
 
 # Determine domains we need certificates for
@@ -83,7 +85,11 @@ nodes.each do |n|
 end
 
 # Get certificates from Let's Encrypt with certbot and sync to s3
-return if node.attribute?('ec2') && !::File.blockdev?(node['letsencryptaws']['ebs_device'])
+if node.attribute?('ec2') && (!node['letsencryptaws']['ebs_device'].nil? && \
+   !::File.blockdev?(node['letsencryptaws']['ebs_device']))
+  Chef::Log.warn("EBS device (#{node['letsencryptaws']['ebs_device']}) is not mounted. Skipping cert requests.")
+  return
+end
 
 certs_needed.each_pair do |domain, sans|
   # Skip certs that may be ratelimited
