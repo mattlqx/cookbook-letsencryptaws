@@ -20,6 +20,11 @@ pyenv_python node['letsencryptaws']['python_version']
 
 pyenv_global node['letsencryptaws']['python_version']
 
+link '/usr/local/bin/pip' do
+  to "/usr/local/pyenv/versions/#{node['letsencryptaws']['python_version']}/bin/pip"
+  only_if { node['letsencryptaws']['link_pybins'] }
+end
+
 pyenv_pip 'parsedatetime' do
   version '2.5'
   only_if do
@@ -40,7 +45,10 @@ pyenv_pip 'certbot' do
   version node['letsencryptaws']['certbot_version']
 end
 
-pyenv_pip 'certbot-dns-route53'
+pyenv_pip 'certbot-dns-route53' do
+  version node['letsencryptaws']['certbot_dns_version']
+end
+
 pyenv_pip 'awscli'
 
 link '/usr/local/bin/certbot' do

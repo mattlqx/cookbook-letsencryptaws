@@ -145,7 +145,13 @@ This recipe is automatically included if the `import_keystore` hash is not empty
     <td><tt>['letsencryptaws']['certbot_version']</tt></td>
     <td>string</td>
     <td>version to enforce for certbot</td>
-    <td><tt>0.26.1</tt></td>
+    <td><tt>1.18.0</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['letsencryptaws']['certbot_dns_version']</tt></td>
+    <td>string</td>
+    <td>version to enforce for certbot-dns-route53</td>
+    <td><tt>['letsencryptaws']['certbot_version']</tt></td>
   </tr>
   <tr>
     <td><tt>['letsencryptaws']['data_bag']</tt></td>
