@@ -2,6 +2,9 @@
 
 This file is used to list changes made in each version of the letsencryptaws cookbook.
 
+## 2.2.0
+- [tgraskemper] - Bump pyenv cookbook to 4.0 for chef 17 deprecations
+
 ## 2.0.7
 - [mattlqx] - allow `node['letsencryptaws']['ebs_device']` to be nil to prevent mkfs, mount and check.
 
