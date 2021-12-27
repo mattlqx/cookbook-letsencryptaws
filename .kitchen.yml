@@ -3,7 +3,7 @@ provisioner:
   name: chef_zero
   channel: stable
   product_name: chef
-  product_version: 16.1.16
+  product_version: 17.8.25
   chef_license: accept
   deprecations_as_errors: false
 

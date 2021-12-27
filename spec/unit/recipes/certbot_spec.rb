@@ -26,7 +26,7 @@ describe 'letsencryptaws::certbot' do
   end
 
   it 'installs needed packages' do
-    expect(chef_run).to install_pyenv_system_install('system')
+    expect(chef_run).to install_pyenv_install('system')
     expect(chef_run).to install_pyenv_python('3.8.3')
     expect(chef_run).to install_pyenv_pip('cryptography')
     expect(chef_run).to install_pyenv_pip('certbot')

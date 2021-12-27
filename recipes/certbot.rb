@@ -14,7 +14,7 @@ end
 
 python_major = node['letsencryptaws']['python_version'].split('.').first.to_i
 
-pyenv_system_install 'system'
+pyenv_install 'system'
 
 pyenv_python node['letsencryptaws']['python_version']
 
