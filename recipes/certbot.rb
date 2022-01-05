@@ -141,13 +141,13 @@ ruby_block 'remove unrequested certificates' do
     live_certs = []
     Dir.glob("#{node['letsencryptaws']['config_dir']}/live/*") do |fn|
       next if ::File.basename(fn) == 'README'
+
       live_certs << ::File.basename(fn.sub(/-\d{4}$/, ''))
     end
     certs_to_delete = live_certs - certs_needed.keys.map { |cn| cn.sub('*', 'star') }
 
     unless certs_to_delete.empty?
-      Chef::Log.warn('Removing the following domains as they are no longer requested by any node: ' +
-                     certs_to_delete.join(', '))
+      Chef::Log.warn("Removing the following domains no longer requested by any node: #{certs_to_delete.join(', ')}")
     end
     certs_to_delete.each do |domain|
       shell_out("certbot delete -n --config-dir #{node['letsencryptaws']['config_dir']} --cert-name #{domain}").error!
