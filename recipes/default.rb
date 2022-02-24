@@ -27,7 +27,7 @@ directory node['letsencryptaws']['ssl_key_dir'] do
 end
 
 # Default keys
-remote_file_s3 ::File.join(node['letsencryptaws']['ssl_cert_dir'], 'default.crt') do
+aws_s3_file ::File.join(node['letsencryptaws']['ssl_cert_dir'], 'default.crt') do
   remote_path "/#{node['letsencryptaws']['sync_path']}/default-ssl/default.crt"
   bucket node['letsencryptaws']['sync_bucket']
   aws_access_key_id (lazy { node['aws_access_key_id'] || aws_creds('aws_access_key_id') })
@@ -39,7 +39,7 @@ remote_file_s3 ::File.join(node['letsencryptaws']['ssl_cert_dir'], 'default.crt'
   sensitive true
 end
 
-remote_file_s3 ::File.join(node['letsencryptaws']['ssl_cert_dir'], 'default.ca') do
+aws_s3_file ::File.join(node['letsencryptaws']['ssl_cert_dir'], 'default.ca') do
   remote_path "/#{node['letsencryptaws']['sync_path']}/default-ssl/ca.crt"
   bucket node['letsencryptaws']['sync_bucket']
   aws_access_key_id (lazy { node['aws_access_key_id'] || aws_creds('aws_access_key_id') })
@@ -51,7 +51,7 @@ remote_file_s3 ::File.join(node['letsencryptaws']['ssl_cert_dir'], 'default.ca')
   sensitive true
 end
 
-remote_file_s3 ::File.join(node['letsencryptaws']['ssl_key_dir'], 'default.key') do
+aws_s3_file ::File.join(node['letsencryptaws']['ssl_key_dir'], 'default.key') do
   remote_path "/#{node['letsencryptaws']['sync_path']}/default-ssl/default.key"
   bucket node['letsencryptaws']['sync_bucket']
   aws_access_key_id (lazy { node['aws_access_key_id'] || aws_creds('aws_access_key_id') })
@@ -82,7 +82,7 @@ node['letsencryptaws']['certs'].each_pair do |domain, _sans|
   domain = domain.sub('*', 'star')
 
   # Real certbot-generated certificates
-  remote_file_s3 ::File.join(node['letsencryptaws']['ssl_cert_dir'], "#{domain}.crt") do
+  aws_s3_file ::File.join(node['letsencryptaws']['ssl_cert_dir'], "#{domain}.crt") do
     remote_path "/#{node['letsencryptaws']['sync_path']}/#{domain}/cert.pem"
     bucket node['letsencryptaws']['sync_bucket']
     aws_access_key_id (lazy { node['aws_access_key_id'] || aws_creds('aws_access_key_id') })
@@ -96,7 +96,7 @@ node['letsencryptaws']['certs'].each_pair do |domain, _sans|
     sensitive true
   end
 
-  remote_file_s3 ::File.join(node['letsencryptaws']['ssl_cert_dir'], "#{domain}.ca") do
+  aws_s3_file ::File.join(node['letsencryptaws']['ssl_cert_dir'], "#{domain}.ca") do
     remote_path "/#{node['letsencryptaws']['sync_path']}/#{domain}/chain.pem"
     bucket node['letsencryptaws']['sync_bucket']
     aws_access_key_id (lazy { node['aws_access_key_id'] || aws_creds('aws_access_key_id') })
@@ -110,7 +110,7 @@ node['letsencryptaws']['certs'].each_pair do |domain, _sans|
     sensitive true
   end
 
-  remote_file_s3 ::File.join(node['letsencryptaws']['ssl_key_dir'], "#{domain}.key") do
+  aws_s3_file ::File.join(node['letsencryptaws']['ssl_key_dir'], "#{domain}.key") do
     remote_path "/#{node['letsencryptaws']['sync_path']}/#{domain}/privkey.pem"
     bucket node['letsencryptaws']['sync_bucket']
     aws_access_key_id (lazy { node['aws_access_key_id'] || aws_creds('aws_access_key_id') })
@@ -177,7 +177,7 @@ node['letsencryptaws']['certs'].each_pair do |domain, _sans|
     sensitive true
     only_if "openssl verify -CAfile #{::File.join(node['letsencryptaws']['ssl_cert_dir'], "#{domain}.ca")} " \
             "#{::File.join(node['letsencryptaws']['ssl_cert_dir'], "#{domain}.crt")}"
-    subscribes :run, "remote_file_s3[#{::File.join(node['letsencryptaws']['ssl_cert_dir'], "#{domain}.crt")}]", :delayed
+    subscribes :run, "aws_s3_file[#{::File.join(node['letsencryptaws']['ssl_cert_dir'], "#{domain}.crt")}]", :delayed
   end
 
   notify_block = proc do
