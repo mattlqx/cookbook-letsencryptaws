@@ -30,9 +30,9 @@ describe 'letsencryptaws::default' do
   end
 
   it 'downloads default certificates' do
-    expect(chef_run).to create_remote_file_s3('/etc/ssl/certs/default.crt')
-    expect(chef_run).to create_remote_file_s3('/etc/ssl/private/default.key')
-    expect(chef_run).to create_remote_file_s3('/etc/ssl/certs/default.ca')
+    expect(chef_run).to create_aws_s3_file('/etc/ssl/certs/default.crt')
+    expect(chef_run).to create_aws_s3_file('/etc/ssl/private/default.key')
+    expect(chef_run).to create_aws_s3_file('/etc/ssl/certs/default.ca')
   end
 
   it 'does not update ca certificates' do
@@ -40,9 +40,9 @@ describe 'letsencryptaws::default' do
   end
 
   it 'downloads requested certificates' do
-    expect(chef_run).to create_remote_file_s3('/etc/ssl/certs/test.example.com.crt')
-    expect(chef_run).to create_remote_file_s3('/etc/ssl/private/test.example.com.key')
-    expect(chef_run).to create_remote_file_s3('/etc/ssl/certs/test.example.com.ca')
+    expect(chef_run).to create_aws_s3_file('/etc/ssl/certs/test.example.com.crt')
+    expect(chef_run).to create_aws_s3_file('/etc/ssl/private/test.example.com.key')
+    expect(chef_run).to create_aws_s3_file('/etc/ssl/certs/test.example.com.ca')
   end
 
   it 'composes requested certificates' do
@@ -55,7 +55,7 @@ describe 'letsencryptaws::default' do
   it 'generates pkcs12 keyring' do
     expect(chef_run).to nothing_execute('generate pkcs12 store for test.example.com')
     expect(chef_run.execute('generate pkcs12 store for test.example.com')).to \
-      subscribe_to('remote_file_s3[/etc/ssl/certs/test.example.com.crt]').on(:run).delayed
+      subscribe_to('aws_s3_file[/etc/ssl/certs/test.example.com.crt]').on(:run).delayed
     expect(chef_run).to nothing_notify_group('pkcs12 store needs generated for test.example.com')
     expect(chef_run.notify_group('pkcs12 store needs generated for test.example.com')).to \
       notify('execute[generate pkcs12 store for test.example.com]').to(:run).immediately
