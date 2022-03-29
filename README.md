@@ -6,7 +6,7 @@ Nodes do not need to be EC2 instances to retrieve or request certificates. All t
 
 ## Requirements
 
-- Python 3 or 2.7 (for certbot and awscli)
+- Python 3
 - certbot ACME client
 - Domain(s) hosted by AWS Route 53
 - S3 bucket for storing/retrieving certificate files

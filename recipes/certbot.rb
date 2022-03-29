@@ -12,8 +12,6 @@ apt_update 'update' do
   action :periodic
 end
 
-python_major = node['letsencryptaws']['python_version'].split('.').first.to_i
-
 pyenv_install 'system'
 
 pyenv_python node['letsencryptaws']['python_version']
@@ -25,21 +23,8 @@ link '/usr/local/bin/pip' do
   only_if { node['letsencryptaws']['link_pybins'] }
 end
 
-pyenv_pip 'parsedatetime' do
-  version '2.5'
-  only_if do
-    node['letsencryptaws']['python_version'].to_s.start_with?('2.7') || \
-      node['letsencryptaws']['python_version'].to_s == '2'
-  end
-end
-
-pyenv_pip 'cryptography' do
-  version python_major >= 3 ? '3.4.6' : '2.8'
-end
-
-pyenv_pip 'idna' do
-  version python_major >= 3 ? '2.9' : '2.6'
-end
+pyenv_pip 'cryptography'
+pyenv_pip 'idna'
 
 pyenv_pip 'certbot' do
   version node['letsencryptaws']['certbot_version']
